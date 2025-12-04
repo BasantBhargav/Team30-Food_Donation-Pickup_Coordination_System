@@ -23,11 +23,18 @@ const DonationSchema = new mongoose.Schema({
             type: String,
             default: 'Not specified'
         },
-        lat: Number,
-        lng: Number
+        lat: {
+            type: Number,
+            default: null
+        },
+        lng: {
+            type: Number,
+            default: null
+        }
     },
     imageUrl: {
-        type: String
+        type: String,
+        default: null
     },
     status: {
         type: String,
@@ -36,19 +43,24 @@ const DonationSchema = new mongoose.Schema({
     },
     claimedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        default: null
     },
     claimedAt: {
-        type: Date
+        type: Date,
+        default: null
     },
     pickedUpAt: {
-        type: Date
+        type: Date,
+        default: null
     },
     otp: {
-        type: String
+        type: String,
+        default: null
     },
     notes: {
-        type: String
+        type: String,
+        default: ""
     },
     createdAt: {
         type: Date,
@@ -56,7 +68,7 @@ const DonationSchema = new mongoose.Schema({
     }
 });
 
-// Index for faster queries
+// Indexes for better performance
 DonationSchema.index({ status: 1, createdAt: -1 });
 DonationSchema.index({ donor: 1 });
 DonationSchema.index({ claimedBy: 1 });
