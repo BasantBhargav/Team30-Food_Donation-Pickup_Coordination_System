@@ -16,6 +16,10 @@ router.post('/register', async (req, res) => {
         return res.status(400).json({ msg: 'Please enter all required fields' });
     }
 
+    if (contact && !/^[0-9]{10}$/.test(contact)) {
+    return res.status(400).json({ msg: 'Please enter a valid 10-digit phone number' });
+}
+    
     if (password.length < 6) {
         return res.status(400).json({ msg: 'Password must be at least 6 characters' });
     }
