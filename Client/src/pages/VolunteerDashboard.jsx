@@ -75,6 +75,21 @@ const VolunteerDashboard = () => {
         }
     };
 
+    const handleCancelClaim = async (donationId) => {
+    if (!window.confirm('Cancel this claim?')) return;
+    setLoading(true);
+    try {
+        await axios.post(`${API_URL}/donations/${donationId}/cancel-claim`, {}, config);
+        alert('✅ Claim cancelled');
+        fetchAvailableDonations();
+        fetchMyClaimedDonations();
+    } catch (err) {
+        alert(err.response?.data?.msg || 'Failed to cancel');
+    } finally {
+        setLoading(false);
+    }
+};
+
     const stats = {
         available: availableDonations.length,
         claimed: myClaimedDonations.filter(d => d.status === 'claimed').length,
@@ -161,23 +176,26 @@ const VolunteerDashboard = () => {
                                     </div>
 
                                     {donation.status === 'claimed' && (
-                                        <div className="mt-3 bg-blue-50 p-4 rounded-xl">
-                                            <p className="text-blue-700 text-sm font-medium mb-2">🔐 Enter OTP from Donor:</p>
-                                            <div className="flex gap-2">
-                                                <input
-                                                    type="text"
-                                                    maxLength={4}
-                                                    placeholder="4-digit OTP"
-                                                    value={otpInputs[donation._id] || ''}
-                                                    onChange={(e) => handleOtpChange(donation._id, e.target.value.replace(/\D/g, ''))}
-                                                    className="flex-1 px-4 py-3 text-center text-2xl font-mono font-bold border-2 rounded-lg"
-                                                />
-                                                <button onClick={() => handleVerifyOtp(donation._id)} disabled={loading} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold">
-                                                    ✓ Verify
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
+    <div className="mt-3 bg-blue-50 p-4 rounded-xl">
+        <p className="text-blue-700 text-sm font-medium mb-2">🔐 Enter OTP from Donor:</p>
+        <div className="flex gap-2">
+            <input
+                type="text"
+                maxLength={6}
+                placeholder="6-digit OTP"
+                value={otpInputs[donation._id] || ''}
+                onChange={(e) => handleOtpChange(donation._id, e.target.value.replace(/\D/g, ''))}
+                className="flex-1 px-4 py-3 text-center text-2xl font-mono font-bold border-2 rounded-lg"
+            />
+            <button onClick={() => handleVerifyOtp(donation._id)} disabled={loading} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold">
+                ✓ Verify
+            </button>
+            <button onClick={() => handleCancelClaim(donation._id)} disabled={loading} className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold">
+                ✕ Cancel
+            </button>
+        </div>
+    </div>
+)}
 
                                     {donation.status === 'picked_up' && (
                                         <div className="mt-3 bg-green-50 p-3 rounded-lg text-center">
