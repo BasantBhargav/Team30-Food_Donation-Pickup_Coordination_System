@@ -18,16 +18,28 @@ router.get('/', async (req, res) => {
         // Calculate estimated meals (1kg = 4 meals assumption)
         const donations = await Donation.find({ status: 'picked_up' });
         let estimatedMeals = 0;
+        // donations.forEach(d => {
+        //     const qty = parseFloat(d.quantity) || 0;
+        //     if (d.quantity.toLowerCase().includes('kg')) {
+        //         estimatedMeals += qty * 4;
+        //     } else if (d.quantity.toLowerCase().includes('meal')) {
+        //         estimatedMeals += qty;
+        //     } else {
+        //         estimatedMeals += qty * 2; // Default assumption
+        //     }
+        // });
+
         donations.forEach(d => {
-            const qty = parseFloat(d.quantity) || 0;
-            if (d.quantity.toLowerCase().includes('kg')) {
-                estimatedMeals += qty * 4;
-            } else if (d.quantity.toLowerCase().includes('meal')) {
-                estimatedMeals += qty;
-            } else {
-                estimatedMeals += qty * 2; // Default assumption
-            }
-        });
+    const qty = parseFloat(d.quantity) || 0;
+    const qtyStr = (d.quantity || '').toLowerCase(); // Safe null check
+    if (qtyStr.includes('kg')) {
+        estimatedMeals += qty * 4;
+    } else if (qtyStr.includes('meal')) {
+        estimatedMeals += qty;
+    } else {
+        estimatedMeals += qty * 2; // Default assumption
+    }
+});
 
         res.json({
             totalDonations,
