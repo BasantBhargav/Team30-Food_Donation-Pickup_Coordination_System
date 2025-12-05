@@ -39,7 +39,7 @@ const Login = () => {
       if (res.data.user) {
         localStorage.setItem('user', JSON.stringify(res.data.user));
 
-        // Navigate based on role
+        // Navigated based on role
         if (res.data.user.role === 'donor') {
           navigate('/donor');
         } else {
